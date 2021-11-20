@@ -7,7 +7,7 @@ import {
 import { OAuth2ServerCoreModule } from './oauth2-server-core.module';
 
 @Module({
-    imports: [OAuth2ServerCoreModule],
+    exports: [OAuth2ServerCoreModule],
 })
 export class OAuth2ServerModule {
     static forRoot(

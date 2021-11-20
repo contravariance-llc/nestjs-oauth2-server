@@ -1,6 +1,6 @@
 {
-  "name": "@t00nday/nestjs-oauth2-server",
-  "version": "0.0.4",
+  "name": "@boyuai/nestjs-oauth2-server",
+  "version": "0.1.0-rc.0",
   "description": "A Nestjs wrapper for oauth2-server",
   "main": "index.js",
   "types": "index.d.ts",
@@ -20,8 +20,8 @@
   "scripts": {
     "commit": "commit",
     "format": "prettier --write lib/**/*.ts test/**/*.ts",
-    "build": "rimraf -rf dist && tsc -p tsconfig.json",
-    "build:watch": "rimraf -rf dist && tsc -p tsconfig.json -w",
+    "build": "rimraf -rf dist && tsc -p tsconfig.build.json",
+    "build:watch": "rimraf -rf dist && tsc -p tsconfig.build.json -w",
     "lint": "eslint lib/**/*.ts --fix",
     "prepublish:npm": "npm run build",
     "publish:npm": "npm publish --access public",
@@ -85,14 +85,16 @@
   },
   "lint-staged": {
     "lib/**/*.ts": [
-      "prettier --write",
-      "eslint --fix"
+      "prettier --write"
+    ],
+    "test/**/*.ts": [
+      "prettier --write"
     ]
   },
   "peerDependencies": {
-    "@nestjs/common": "^6.10.0 || ^7.0.0",
+    "@nestjs/common": "^6.10.0 || ^7.0.0 || ^8.0.10",
     "reflect-metadata": "^0.1.12",
-    "rxjs": "^6.0.0"
+    "rxjs": "^6.0.0 || ^7.2.0"
   },
   "homepage": "https://github.com/toondaey/nestjs-oauth2-server#readme",
   "publishConfig": {

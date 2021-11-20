@@ -1,10 +1,11 @@
 import OAuth2Server = require('oauth2-server');
 import { Test, TestingModule } from '@nestjs/testing';
-import { InternalServerErrorException } from '@nestjs/common';
 
-import { TestModule } from '../src/test.module';
-import { TestModelService } from '../src/test-model.service';
 import { OAUTH2_SERVER } from '../../lib/oauth2-server.constants';
+import { TestModelService } from '../src/test-model.service';
+import { OAuth2ServerModule } from '../../lib';
+import { TestConfigService } from '../src/test-config.service';
+import { ExistingModule } from '../src/existing.module';
 
 describe('ExampleModule', () => {
     let module: TestingModule;
@@ -12,8 +13,12 @@ describe('ExampleModule', () => {
     describe('register()', () => {
         beforeEach(async () => {
             module = await Test.createTestingModule({
-                imports: [TestModule.withForRoot()],
-                providers: [TestModelService],
+                imports: [
+                    OAuth2ServerModule.forRoot({
+                        allowEmptyState: true,
+                        modelClass: TestModelService,
+                    }),
+                ],
             }).compile();
         });
 
@@ -24,28 +29,16 @@ describe('ExampleModule', () => {
         });
     });
 
-    describe('register() to throw when no model is provided', () => {
-        it('should be throw if now model provided', () => {
-            return Test.createTestingModule({
-                imports: [TestModule.withForRoot()],
-            })
-                .compile()
-                .catch(error =>
-                    expect(error).toBeInstanceOf(
-                        InternalServerErrorException,
-                    ),
-                );
-        });
-    });
-
     describe('registerAsync()', () => {
         describe('useFactory()', () => {
             it('should register module', async () => {
                 module = await Test.createTestingModule({
                     imports: [
-                        TestModule.withUseFactoryForRootAsync(),
+                        OAuth2ServerModule.forRootAsync({
+                            useFactory: () => ({}),
+                            modelClass: TestModelService,
+                        }),
                     ],
-                    providers: [TestModelService],
                 }).compile();
 
                 expect(
@@ -57,8 +50,13 @@ describe('ExampleModule', () => {
         describe('useClass()', () => {
             it('should register module', async () => {
                 module = await Test.createTestingModule({
-                    imports: [TestModule.withUseClassForRootAsync()],
-                    providers: [TestModelService],
+                    imports: [
+                        OAuth2ServerModule.forRootAsync({
+                            imports: [ExistingModule],
+                            useClass: TestConfigService,
+                            modelClass: TestModelService,
+                        }),
+                    ],
                 }).compile();
 
                 expect(
@@ -71,9 +69,12 @@ describe('ExampleModule', () => {
             it('should register module', async () => {
                 module = await Test.createTestingModule({
                     imports: [
-                        TestModule.withUseExistingForRootAsync(),
+                        OAuth2ServerModule.forRootAsync({
+                            imports: [ExistingModule],
+                            useExisting: TestConfigService,
+                            modelClass: TestModelService,
+                        }),
                     ],
-                    providers: [TestModelService],
                 }).compile();
 
                 expect(

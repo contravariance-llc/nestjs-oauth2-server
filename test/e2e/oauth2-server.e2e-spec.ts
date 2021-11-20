@@ -3,25 +3,36 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TestController } from '../src/test.controller';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 
-import { TestModule } from '../src/test.module';
-import { TestModelService } from '../src/test-model.service';
-import { ITestExpectedResponses } from '../src/test.interfaces';
 import { DataProviderModule } from '../src/data-provider.module';
+import { OAuth2ServerModule } from '../../lib';
+import { TestModelService } from '../src/test-model.service';
+import {
+    ACCESS_TOKEN,
+    AUTHORIZATION_CODE,
+    CLIENT,
+    REFRESH_TOKEN,
+} from '../src/data';
 
 describe('e2e', () => {
     let module: TestingModule;
     let app: INestApplication;
-    let testResponses: Partial<ITestExpectedResponses>;
 
     beforeEach(async () => {
-        testResponses = {};
         module = await Test.createTestingModule({
             controllers: [TestController],
             imports: [
-                TestModule.withUseClassForRootAsync(),
-                DataProviderModule.register(testResponses as any),
+                OAuth2ServerModule.forRoot({
+                    allowEmptyState: true,
+                    modelClass: TestModelService,
+                    imports: [
+                        DataProviderModule.register({
+                            accessToken: ACCESS_TOKEN,
+                            authorizationCode: AUTHORIZATION_CODE,
+                            refreshToken: REFRESH_TOKEN,
+                        }),
+                    ],
+                }),
             ],
-            providers: [TestModelService],
         }).compile();
 
         app = module.createNestApplication();
@@ -44,17 +55,10 @@ describe('e2e', () => {
                 .expect(({ body }: request.Response) => {
                     expect(body).toEqual(
                         expect.objectContaining({
-                            accessToken: expect.any(String),
-                            accessTokenExpiresAt: expect.any(String),
-                            client: {
-                                id: expect.anything(),
-                                grants: expect.arrayContaining([
-                                    'authorization_code',
-                                ]),
-                                redirectUris: expect.arrayContaining([
-                                    'https://example.org',
-                                ]),
-                            },
+                            accessToken: ACCESS_TOKEN.accessToken,
+                            accessTokenExpiresAt: ACCESS_TOKEN.accessTokenExpiresAt!.toISOString(),
+                            client: CLIENT,
+                            user: {},
                         }),
                     );
                 });
@@ -89,27 +93,20 @@ describe('e2e', () => {
                     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
                 )
                 .query({
-                    client_id: '12345678',
+                    client_id: CLIENT.id,
                     response_type: 'code',
-                    state: 'akfhkahflah',
+                    state: 'custom',
                 })
                 .expect(HttpStatus.CREATED)
                 .expect(({ body }: request.Response) => {
                     expect(body).toEqual({
-                        authorizationCode: expect.any(String),
-                        expiresAt: expect.any(String),
-                        redirectUri: expect.any(String),
-                        scope: expect.any(String),
-                        client: {
-                            id: expect.anything(),
-                            grants: expect.arrayContaining([
-                                'authorization_code',
-                            ]),
-                            redirectUris: expect.arrayContaining([
-                                'https://example.org',
-                            ]),
-                        },
-                        user: expect.any(Object),
+                        authorizationCode:
+                            AUTHORIZATION_CODE.authorizationCode,
+                        expiresAt: AUTHORIZATION_CODE.expiresAt!.toISOString(),
+                        redirectUri: AUTHORIZATION_CODE.redirectUri,
+                        scope: AUTHORIZATION_CODE.scope,
+                        client: CLIENT,
+                        user: {},
                     });
                 });
         });
@@ -128,39 +125,27 @@ describe('e2e', () => {
             return request(app.getHttpServer())
                 .post('/renew')
                 .set({
-                    Authorization:
-                        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
                     'Content-Type':
                         'application/x-www-form-urlencoded',
                 })
                 .send({
-                    client_id: '12345678',
-                    client_secret: '12345678',
+                    client_id: CLIENT.id,
+                    client_secret: 'client_secret',
                     grant_type: 'authorization_code',
-                    code: 'akefhalfgak',
-                    redirect_uri: 'https://example.org',
+                    code: AUTHORIZATION_CODE.authorizationCode,
+                    redirect_uri: AUTHORIZATION_CODE.redirectUri,
                 })
                 .expect(HttpStatus.CREATED)
                 .expect(({ body }: request.Response) => {
-                    expect(body).toEqual(
-                        expect.objectContaining({
-                            accessToken: expect.any(String),
-                            authorizationCode: expect.any(String),
-                            refreshToken: expect.any(String),
-                            accessTokenExpiresAt: expect.any(String),
-                            refreshTokenExpiresAt: expect.any(String),
-                            scope: expect.any(String),
-                            client: {
-                                id: expect.anything(),
-                                grants: expect.arrayContaining([
-                                    'authorization_code',
-                                ]),
-                                redirectUris: expect.arrayContaining([
-                                    'https://example.org',
-                                ]),
-                            },
-                        }),
-                    );
+                    expect(body).toEqual({
+                        accessToken: ACCESS_TOKEN.accessToken,
+                        accessTokenExpiresAt: ACCESS_TOKEN.accessTokenExpiresAt!.toISOString(),
+                        refreshToken: REFRESH_TOKEN.refreshToken,
+                        refreshTokenExpiresAt: REFRESH_TOKEN.refreshTokenExpiresAt!.toISOString(),
+                        scope: REFRESH_TOKEN.scope,
+                        client: CLIENT,
+                        user: {},
+                    });
                 });
         });
     });

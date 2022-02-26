@@ -1,5 +1,12 @@
 # Changelog
 
+## [[0.1.0]](https://github.com/boyuai/nestjs-oauth2-server/compare/0.0.4...0.1.0) - 26/02/2022
+
+### Changed
+
+- BREAKING: You don't have to register this module in `app.module.ts` anymore.
+- BREAKING: `@OAuth2Model` is deprecated in favor of `@Injectable`, meanwhile you should use `modelClass` to specify a model service for oauth2-server. Now you can inject database repository in oauth model service.
+
 ## [[0.0.4]](https://github.com/boyuai/nestjs-oauth2-server/compare/0.0.3...0.0.4) - 25/11/2020
 
 ### Changed

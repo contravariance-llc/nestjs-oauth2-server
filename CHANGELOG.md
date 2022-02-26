@@ -1,6 +1,6 @@
 # Changelog
 
-## [[0.0.4]](https://github.com/toondaey/nestjs-oauth2-server/compare/0.0.3...0.0.4) - 25/11/2020
+## [[0.0.4]](https://github.com/boyuai/nestjs-oauth2-server/compare/0.0.3...0.0.4) - 25/11/2020
 
 ### Changed
 

@@ -23,8 +23,8 @@ export interface IOAuth2ServerModuleAsyncOptions
     useFactory?: (
         ...args: any[]
     ) => Omit<IOAuth2ServerModuleOptions, 'modelClass'>;
-    // eslint-disable-next-line @typescript-eslint/ban-types
     inject?: Array<
+        // eslint-disable-next-line @typescript-eslint/ban-types
         Type<any> | string | symbol | Abstract<any> | Function
     >;
 }

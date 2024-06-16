@@ -2346,10 +2346,10 @@
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz#d3357479a0fdfdd5907fe67e17e0a85c906e1301"
   integrity sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==
 
-"@types/oauth2-server@3.0.12":
-  version "3.0.12"
-  resolved "https://registry.yarnpkg.com/@types/oauth2-server/-/oauth2-server-3.0.12.tgz#3c404055c2c88068a3ee8f5e5a0c5a12bca8c365"
-  integrity sha512-biRndg8t05UxbW1Aqe9kqDbzoi3wSgKITQxtLKR2eK0SwWTgF6AS32IyriFX6qf8KZWhruViVat7MuFfuAUrZQ==
+"@types/oauth2-server@3.0.16":
+  version "3.0.16"
+  resolved "https://registry.yarnpkg.com/@types/oauth2-server/-/oauth2-server-3.0.16.tgz#193f8b266d40df432eaccf8712fe4d394ca3c1ef"
+  integrity sha512-JfNNW5flsdlB8PxiyLOcUFiJbUiljNh1mM+/VcqJjPRhU+9CJTPD3ww16gSrvQk5QVCbQ/+sxg8tYhgBtLzCug==
   dependencies:
     "@types/express" "*"
 

@@ -46,7 +46,7 @@
     "@types/jest": "26.0.24",
     "@types/node": "13.13.52",
     "@types/oauth2-server": "3.0.16",
-    "@types/rimraf": "3.0.2",
+    "@types/rimraf": "4.0.5",
     "@types/supertest": "2.0.11",
     "@typescript-eslint/eslint-plugin": "7.13.0",
     "@typescript-eslint/parser": "7.13.0",
